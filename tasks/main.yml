@@ -1,0 +1,22 @@
+--- 
+- name: Install docker-py
+  yum: name=python-pip state=present
+
+- pip: name=docker-py state=present
+
+- file: path={{cont_data_path}}/conf state=directory
+
+- yum: name=libselinux-python state=present
+  when: ansible_os_family == 'RedHat'
+
+- apt: name=libselinux-python state=present
+  when: ansible_os_family == 'Debian'
+
+- name: Write myid file.
+  template: src=myid.j2 dest={{cont_data_path}}/myid owner=root group=root
+
+- name: Configure zookeeper
+  template: src=zoo.cfg.j2 dest={{cont_data_path}}/conf/zoo.cfg owner=root group=root
+
+- name: Make sure docker zookeeper image is running
+  docker: docker_api_version={{docker_api_version}} image=jplock/zookeeper volumes={{cont_data_path}}/myid:{{data_dir}}/myid:ro,{{cont_data_path}}/conf/zoo.cfg:/opt/zookeeper-3.4.5/conf/zoo.cfg:ro ports=2181:2181,2888:2888,3888:3888

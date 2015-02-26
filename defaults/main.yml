@@ -1,0 +1,16 @@
+---
+#docker host related variables:
+docker_api_version: 1.16
+cont_data_path: /opt/zookeeper
+
+#container internal variables:
+client_port: 2181
+init_limit: 5
+sync_limit: 2
+tick_time: 2000
+data_dir: /tmp/zookeeper
+log_dir: /var/log
+zoo_id: 1
+zookeeper_hosts:
+  - "{{inventory_hostname}}"
+
